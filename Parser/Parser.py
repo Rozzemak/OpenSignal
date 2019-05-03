@@ -1,16 +1,14 @@
 import pandas as pd
 import os
 import shutil
-import requests
 
 
 def parse_to_csv(data):
-    i = 1
     for x in data:
-        open('data'+str(i)+'.txt', 'wb').write(x.read())
-        parse_to_csv_local('data'+str(i)+'.txt')
-        i = i+1
-
+        open(str(x)+'.txt', 'wb').write(data[x].read())
+        parse_to_csv_local(str(x)+'.txt')
+    for x in data:
+        os.remove(str(x)+'.txt')
     return 0
 
 
