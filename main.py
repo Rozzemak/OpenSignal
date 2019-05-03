@@ -21,7 +21,3 @@ for x in file_Url:
     bytes_to_str = bytes_to_str.split()
     data.append(bytes_to_str)
 print(data)
-
-
-
-
