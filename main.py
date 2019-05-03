@@ -1,6 +1,7 @@
 from fetch_data import FetchData
+from Parser import Parser as Pr
 
 fetch_data = FetchData("https://physionet.org/physiobank/database/emgdb/RECORDS")
 l = fetch_data.get_data()
-for x in l:
-    print(x.read())
+Pr.parse_to_csv(l)
+
