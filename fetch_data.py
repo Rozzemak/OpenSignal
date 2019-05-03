@@ -8,23 +8,28 @@ class FetchData:
 
     #"https://physionet.org/physiobank/database/emgdb/RECORDS"
     def get_urls(self):
+        new = self.get_file_name()
+        file_url = []
+        for x in new:
+            file_url.append("https://physionet.org/physiobank/database/emgdb/{0}{1}".format(x, ".txt"))
+        return file_url
+
+    def get_file_name(self):
         f = urlopen(self.link)
         my_file = f.read()
         new = str(my_file, encoding)
         new = new.split()
-        file_url = []
-
-        for x in new:
-            file_url.append("https://physionet.org/physiobank/database/emgdb/{0}{1}".format(x, ".txt"))
-        print(file_url)
-        return file_url
+        return new
 
     def get_data(self):
         data = self.get_urls()
-        http_response = []
+        name = self.get_file_name()
+        http_response = {}
+        i = 0
         for x in data:
             fe = urlopen(x)
-            http_response.append(fe)
+            http_response[name[i]] = fe
+            i += 1
         return http_response
 
 
