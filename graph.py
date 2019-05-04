@@ -1,8 +1,6 @@
-from bokeh.models.callbacks import CustomJS
-from bokeh.layouts import grid, column, row
+from bokeh.layouts import column, row
 from bokeh.models.widgets import Select, Button
-from bokeh.plotting import figure, output_file, show, curdoc
-from bokeh.events import ButtonClick
+from bokeh.plotting import figure, output_file, curdoc
 import fetch_data as fd
 import pandas as pd
 from Parser import Parser as Pr
