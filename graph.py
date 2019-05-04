@@ -7,6 +7,7 @@ import fetch_data as fd
 import pandas as pd
 from Parser import Parser as Pr
 from Callbacks import changeGraphCb
+from scipy.stats import pearsonr
 
 
 class c_graph:
@@ -26,6 +27,23 @@ class c_graph:
         self.healthy = pd.read_csv("Files/emg_healthy.txt.csv")
         self.myopathy = pd.read_csv("Files/emg_myopathy.txt.csv")
         self.neuropathy = pd.read_csv("Files/emg_neuropathy.txt.csv")
+        self.corelate()
+
+
+    def corelate(self):
+        lll = []
+        llll = []
+        l = self.healthy["x"]
+        ll = self.neuropathy["y"]
+        lls = self.myopathy["y"]
+
+        for x in range(0, 50):
+            lll.append(l[x])
+            llll.append(ll[x])
+
+        pear, v_value = pearsonr(lll, llll)
+        print(pear)
+        return pear
 
     def controls(self):
         options = self.fileNames
