@@ -3,8 +3,11 @@ from bokeh.layouts import grid, column, row
 from bokeh.models.widgets import Select, Button
 from bokeh.plotting import figure, output_file, show, curdoc
 from bokeh.events import ButtonClick
+from numpy import float64
+
 import fetch_data as fd
 import pandas as pd
+from scipy.stats import pearsonr
 from Parser import Parser as Pr
 
 
@@ -21,6 +24,24 @@ class c_graph:
         self.healthy = pd.read_csv("Files/emg_healthy.txt.csv")
         self.myopathy = pd.read_csv("Files/emg_myopathy.txt.csv")
         self.neuropathy = pd.read_csv("Files/emg_neuropathy.txt.csv")
+
+        lll = []
+        llll = []
+        l = self.healthy["x"]
+        ll = self.neuropathy["y"]
+        lls = self.myopathy["y"]
+        print(l)
+        print(ll)
+        for x in range(0, 50):
+            lll.append(l[x])
+            llll.append(ll[x])
+
+        print(lll)
+        print(llll)
+
+        pear, v_value = pearsonr(lll, llll)
+        print(pear)
+        #print(p_valu)
 
     def controls(self):
         options = ["Healthy", "Myopathy", "Neurophaty"]
