@@ -1,12 +1,5 @@
 
-from random import random
-
-
-def SelectPlot(attr, old, new):
+def changeGraphCb(attr, old, new, action, eleId):
     print(attr + " changed from:[" + old + "]to[" + new + "]")
-    return 0
-
-
-def changeGraphCb(attr, old, new):
-    SelectPlot(attr, old, new)
+    action(eleId, new)
     return 0
