@@ -29,21 +29,41 @@ class c_graph:
         self.neuropathy = pd.read_csv("Files/emg_neuropathy.txt.csv")
         self.corelate()
 
+    def corelate(self,start_index, end_index, signal, compared_signal):
+        signal_list = []
+        compared_signal_list = []
+        if signal == 0:
+            l = self.healthy["y"]
+        elif signal == 1:
+            l = self.neuropathy["y"]
+        elif signal == 2:
+            l = self.myopathy["y"]
+        else:
+            l = []
 
-    def corelate(self):
-        lll = []
-        llll = []
-        l = self.healthy["x"]
-        ll = self.neuropathy["y"]
-        lls = self.myopathy["y"]
+        if compared_signal == 0:
+            ll = self.healthy["y"]
+        elif compared_signal == 1:
+            ll = self.neuropathy["y"]
+        elif compared_signal == 2:
+            ll = self.myopathy["y"]
+        else:
+            ll = []
 
-        for x in range(0, 50):
-            lll.append(l[x])
-            llll.append(ll[x])
+        for x in range(start_index, end_index):
+            signal_list.append(l[x])
+            compared_signal_list.append(ll[x])
 
-        pear, v_value = pearsonr(lll, llll)
-        print(pear)
-        return pear
+        pear, v_value = pearsonr(signal_list, compared_signal_list)
+        #print(pear)
+        if pear >= 0.80:
+            return signal_list, compared_signal_list
+        else:
+            return None
+
+    def return_similar_signal_index(self, pear):
+        if pear >= 80:
+            return
 
     def controls(self):
         options = self.fileNames
@@ -62,8 +82,6 @@ class c_graph:
     def plotter(self):
         x1 = self.healthy["x"]
         y1 = self.healthy["y"]
-        x = [-3, 2, -1, 1]
-        y = [-1, 0, -3, 2]
 
         x2 = self.neuropathy["x"]
         y2 = self.neuropathy["y"]
