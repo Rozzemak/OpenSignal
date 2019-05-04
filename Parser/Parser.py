@@ -5,12 +5,14 @@ import shutil
 
 def parse_to_csv(data):
     df = []
+    filenames = []
     for x in data:
         open(str(x)+'.txt', 'wb').write(data[x].read())
         df.append(parse_to_csv_local(str(x)+'.txt'))
     for x in data:
+        filenames.append(str(x) + '.txt.csv')
         os.remove(str(x)+'.txt')
-    return df
+    return [df, filenames]
 
 
 def parse_to_csv_local(file):
