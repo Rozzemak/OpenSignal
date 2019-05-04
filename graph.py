@@ -13,14 +13,18 @@ from scipy.stats import pearsonr
 class c_graph:
     fileNames = []
     plots = []
+    plotArgs = []
+    plotDict = {}
 
     def __init__(self):
         self.fetch_data = fd.FetchData("https://physionet.org/physiobank/database/emgdb/RECORDS")
         self.l = self.fetch_data.get_data()
         self.dfs = Pr.parse_to_csv(self.l)
         self.fileNames = self.dfs[1]
-        output_file('dashboard.html')
         self.load_csv()
+        output_file('dashboard.html')
+        curdoc().add_root(column(self.controls()))
+        curdoc().add_root(row(self.changeGraph(-1, "emg_healthy.txt.csv")))
 
 
     def load_csv(self):
@@ -28,6 +32,7 @@ class c_graph:
         self.myopathy = pd.read_csv("Files/emg_myopathy.txt.csv")
         self.neuropathy = pd.read_csv("Files/emg_neuropathy.txt.csv")
         self.corelate()
+
 
 
     def corelate(self):
@@ -55,18 +60,12 @@ class c_graph:
         findButton = Button(label="Find similarities", button_type="success")
         #findButton.on_event(ButtonClick, self.callback)
         #firstSignal.on_change("value", print("value"))
-
         widgets = column(firstSignal, secondSignal, findButton)
         return widgets
 
-    def plotter(self):
-        x1 = self.healthy["x"]
-        y1 = self.healthy["y"]
-        x = [-3, 2, -1, 1]
-        y = [-1, 0, -3, 2]
-
-        x2 = self.neuropathy["x"]
-        y2 = self.neuropathy["y"]
+    def createPlots(self, graph, filename):
+        x1 = graph["x"]
+        y1 = graph["y"]
 
         plot1 = figure(
             tools="pan,zoom_in,zoom_out",
@@ -75,22 +74,25 @@ class c_graph:
             x_range=(1, 1.5)
         )
         plot1.line(x1, y1)
+        self.plotDict[filename] = plot1
+        return plot1
 
-        plot2 = figure(
-            title="Second signal", width=1200, height=350,
-            y_range=(-0.5, 0.5),
-            x_range=(1, 1.5)
-        )
-        plot2.line(x2, y2)
-        plots = column(plot1, plot2)
-        self.plots.append(plot1)
-        self.plots.append(plot2)
-        return plots
-
-    def changeGraph(self, graphId, fileName):
+    oldGraphId = -1
+    def changeGraph(self, graphId, fileName, oldFileName=-1):
         print("id: [" + str(graphId) + "]["+fileName+"]")
+        #self.plotter(self.healthy)
+        #self.plotter(self.myopathy)
+        print(self.plotDict)
+        self.plotDict[fileName] = self.createPlots(pd.read_csv("Files/"+fileName), fileName)
+        print(self.plotDict[fileName])
+        if not oldFileName == -1:
+            #and not graphId != self.oldGraphId:
+            curdoc().remove_root(self.plotDict[oldFileName])
+        curdoc().add_root(self.plotDict[fileName])
+        self.oldGraphId = graphId
+
 
 
     def run(self):
-        curdoc().add_root(row(self.controls(), self.plotter()))
+        return 0
 
