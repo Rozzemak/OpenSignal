@@ -4,6 +4,7 @@ from bokeh.plotting import figure, output_file, curdoc
 import fetch_data as fd
 import pandas as pd
 from Parser import Parser as Pr
+from Callbacks import changeGraphCb
 
 
 class c_graph:
@@ -22,8 +23,11 @@ class c_graph:
 
     def controls(self):
         options = ["Healthy", "Myopathy", "Neurophaty"]
-        firstSignal = Select(title="First signal:", options=options)
-        secondSignal = Select(title="Second signal:", options=options)
+        firstSignal = Select(title="First signal:", value=options[0], options=options)
+        firstSignal.on_change('value', changeGraphCb)
+        secondSignal = Select(title="Second signal:", value=options[0], options=options)
+        secondSignal.on_change('value', changeGraphCb)
+
         findButton = Button(label="Find similarities", button_type="success")
         #findButton.on_event(ButtonClick, self.callback)
         #firstSignal.on_change("value", print("value"))
