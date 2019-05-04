@@ -2,15 +2,19 @@ from bokeh.models.callbacks import CustomJS
 from bokeh.layouts import grid, column, row
 from bokeh.models.widgets import Select, Button
 from bokeh.plotting import figure, output_file, show
+from bokeh.events import ButtonClick
 
 output_file('dashboard.html')
 
+def callback(event):
+    print('Python:Click')
 
 def controls():
     options = ["item 1", "item 2", "item 3"]
     firstSignal = Select(title="First signal:", options=options)
     secondSignal = Select(title="Second signal:", options=options)
     findButton = Button(label="Find similarities", button_type="success")
+    findButton.on_event(ButtonClick, callback)
     widgets = column(firstSignal, secondSignal, findButton)
 
     return widgets
