@@ -1,17 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="3720367d-817d-4a2d-a254-ca02251c45f5" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/FL-EXT zapesti.ASC" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Notebook.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/RunForever.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ngrok.exe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/OpenGraph/OpenGraph.py" beforeDir="false" afterPath="$PROJECT_DIR$/OpenGraph/OpenGraph.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server.py" beforeDir="false" afterPath="$PROJECT_DIR$/Server.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/graph.py" beforeDir="false" afterPath="$PROJECT_DIR$/graph.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" />
-    </list>
+    <list default="true" id="3720367d-817d-4a2d-a254-ca02251c45f5" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -23,8 +13,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Server.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="441">
-              <caret line="139" column="37" selection-start-line="139" selection-start-column="37" selection-end-line="139" selection-end-column="37" />
+            <state relative-caret-position="357">
+              <caret line="33" column="7" selection-start-line="33" selection-start-column="7" selection-end-line="33" selection-end-column="7" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
                 <element signature="e#638#999#0" />
@@ -244,7 +234,7 @@
       <workItem from="1562155488028" duration="66327000" />
       <workItem from="1562259179056" duration="102000" />
       <workItem from="1562259312462" duration="13295000" />
-      <workItem from="1562272759454" duration="4093000" />
+      <workItem from="1562272759454" duration="4729000" />
     </task>
     <task id="LOCAL-00001" summary="Code completely re-writen from scratch. OOP approach used. Graph metadata impl, graph data selection impl.">
       <created>1562258870230</created>
@@ -253,13 +243,20 @@
       <option name="project" value="LOCAL" />
       <updated>1562258870230</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Server restart on fault-impl. All hosts and origins are now allowed. Server creation is now custom.">
+      <created>1562333060652</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1562333060652</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="96969000" />
+    <option name="totallyTimeSpent" value="97605000" />
   </component>
-  <component name="TodoView">
+  <component name="TodoView" selected-index="4">
     <todo-panel id="selected-file">
       <is-autoscroll-to-source value="true" />
     </todo-panel>
@@ -272,16 +269,16 @@
     <frame x="1912" y="-8" width="1936" height="1096" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.119936034" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.119936034" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.24653149" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.24653149" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.2614728" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info anchor="bottom" id="TODO" order="6" weight="0.32932332" />
+      <window_info active="true" anchor="bottom" id="TODO" order="6" visible="true" weight="0.32870865" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="8" weight="0.32781956" />
       <window_info anchor="bottom" id="Database Changes" order="9" />
@@ -334,7 +331,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Code completely re-writen from scratch. OOP approach used. Graph metadata impl, graph data selection impl." />
-    <option name="LAST_COMMIT_MESSAGE" value="Code completely re-writen from scratch. OOP approach used. Graph metadata impl, graph data selection impl." />
+    <MESSAGE value="Server restart on fault-impl. All hosts and origins are now allowed. Server creation is now custom." />
+    <option name="LAST_COMMIT_MESSAGE" value="Server restart on fault-impl. All hosts and origins are now allowed. Server creation is now custom." />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/opensig2$Server.coverage" NAME="Server Coverage Results" MODIFIED="1562272801298" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
@@ -500,8 +498,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Server.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="441">
-          <caret line="139" column="37" selection-start-line="139" selection-start-column="37" selection-end-line="139" selection-end-column="37" />
+        <state relative-caret-position="357">
+          <caret line="33" column="7" selection-start-line="33" selection-start-column="7" selection-end-line="33" selection-end-column="7" />
           <folding>
             <element signature="e#0#13#0" expanded="true" />
             <element signature="e#638#999#0" />
