@@ -1,10 +1,11 @@
-from typing import List, Any
+from typing import List, Any, Set
 import io
 
 import numpy
 import numpy as np
 import holoviews as hv
 from bokeh.layouts import column, row, layout
+from bokeh.model import Model
 from bokeh.models.widgets import Select, Button, Slider
 from bokeh.plotting import figure, output_file, curdoc, show
 import fetch_data as fd
@@ -21,7 +22,7 @@ from bokeh.plotting import *
 from bokeh.models import CustomJS
 # create a plot and style its properties
 from OpenGraph.OpenGraph import OpenGraph
-from bokeh.layouts import row
+from bokeh.layouts import row, column, layout
 from bokeh.models import ColumnDataSource, CustomJS, HoverTool, PanTool, WheelPanTool, WheelZoomTool, LassoSelectTool, \
     ResetTool, SaveTool, PolySelectTool, ZoomOutTool, ZoomInTool, BoxSelectTool
 from bokeh.models.widgets import Button
@@ -31,8 +32,8 @@ import numpy as np
 
 class OpenSignal:
     openGraph: OpenGraph
-    plots = []
-    plotArgs = []
+    DefaultDoc: List[Model] = []
+
 
     # OpenGraphSection
     file_source = ColumnDataSource({'file_contents': [], 'file_name': []})
@@ -43,7 +44,7 @@ class OpenSignal:
         # print(self.openGraph.Metadata.Data)
         # print(self.openGraph.Metadata.Data)
         # curdoc().add_root(column(self.controls()))
-        self.createPlots(self.openGraph)
+
         # self.modDoc = self.modify_doc(curdoc())
 
         return ""
@@ -60,19 +61,9 @@ class OpenSignal:
         self.onFileChanged()
         return ""
 
-    def createPlots(self, openGraph: OpenGraph):
-        for j in range(len(openGraph.Figures)):
-            curdoc().add_root(column(openGraph.Buttons[j], openGraph.Figures[j]))
-        return
-    ##
 
-    def __init__(self):
-        #self.fetch_data = fd.FetchData("https://physionet.org/physiobank/database/emgdb/RECORDS")
-        #self.l = self.fetch_data.get_data()
-        #self.dfs = Pr.parse_to_csv(self.l)
-        #self.fileNames = self.dfs[1]
-        #self.load_csv()
-        #output_file('dashboard.html')
+
+    def createUploadFileButton(self):
         self.file_source.on_change('data', self.file_callback)
         button = Button(label="Upload", button_type="success")
         button.callback = CustomJS(args=dict(file_source=self.file_source), code="""
@@ -109,6 +100,20 @@ class OpenSignal:
            """)
         curdoc().add_root(row(button))
 
+    ##
+
+    def __init__(self):
+        #self.fetch_data = fd.FetchData("https://physionet.org/physiobank/database/emgdb/RECORDS")
+        #self.l = self.fetch_data.get_data()
+        #self.dfs = Pr.parse_to_csv(self.l)
+        #self.fileNames = self.dfs[1]
+        #self.load_csv()
+        #output_file('dashboard.html')
+        self.createUploadFileButton()
+        return
+
+
+    #  Depreceated down below
     def load_csv(self):
         self.healthy = pd.read_csv("Files/emg_healthy.txt.csv")
         self.myopathy = pd.read_csv("Files/emg_myopathy.txt.csv")
