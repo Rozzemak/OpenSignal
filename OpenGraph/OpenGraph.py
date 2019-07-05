@@ -30,7 +30,8 @@ class OpenGraph:
     Figures: List[Figure] = []
     Buttons: List[Button] = []
     ActiveSelection: Dict[int, float] = {}
-
+    Models: List[Column] = []
+    Layout: LayoutDOM = layout([])
 
     def __init__(self, AscFile):
         self.Metadata = self.loadFile(AscFile)
@@ -38,6 +39,13 @@ class OpenGraph:
         self.loadChannels()
         self.setDataSources()
         self.createFigures()
+        self.createModels()
+        #self.createLayout()
+
+    def createLayout(self):
+        for model in range(len(self.Models)):
+            layout().children.append(self.Models[model])
+            curdoc().add_root(self.Models[model])
 
     def createFigures(self):
         for i in range(len(self.Metadata.Data.columns)):
@@ -53,7 +61,7 @@ class OpenGraph:
                 width=1200, height=350,
                 y_range=(self.Metadata.Data[i].min(), self.Metadata.Data[i].max()),
                 x_range=(0, y1.size),
-                x_axis_label="Ticks[Sampling Rate]",
+                x_axis_label="Ticks[Individual samples]",
                 y_axis_label=str(list(self.Metadata.Units)[0]),
                 x_axis_location="below"
                 #y_axis_type="datetime", Does not make sence to time this really
@@ -66,10 +74,17 @@ class OpenGraph:
                          selection_color="firebrick", selection_line_alpha=0.1)
 
             btn = Button(label='Selected points', button_type='success', name=str(i))
-            print(i)
             btn.on_click(partial(self.print_datapoints, graphId=i))
             self.Buttons.append(btn)
             self.Figures.append(plot)
+
+
+    def createModels(self):
+        for j in range(len(self.Figures)):
+            model = column(self.Buttons[j], self.Figures[j])
+            self.Models.append(model)
+            curdoc().add_root(model)
+        return
 
     def setDataSources(self):
         for i in range(len(self.Metadata.Data.columns)):
@@ -87,7 +102,8 @@ class OpenGraph:
         indices = self.DataSources[graphId].selected.indices
         self.ActiveSelection = dict(zip(sorted(list(indices)),
                                         self.Metadata.Data[graphId].astype(float)))
-        print(self.ActiveSelection)
+        #print(self.ActiveSelection)
+        print(self.Metadata.Data[0].corr(self.Metadata.Data[1], method='pearson', min_periods=1))
 
 
     def loadFile(self, fileStream):
