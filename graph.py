@@ -1,12 +1,15 @@
+import uuid
 from typing import List, Any, Set
 import io
 
 import numpy
 import numpy as np
 import holoviews as hv
+from bokeh.io import push_notebook
 from bokeh.layouts import column, row, layout
 from bokeh.model import Model
 from bokeh.models.widgets import Select, Button, Slider
+from bokeh.document import Document
 from bokeh.plotting import figure, output_file, curdoc, show
 import fetch_data as fd
 import pandas as pd
@@ -16,31 +19,31 @@ from scipy.stats import pearsonr
 from OpenGraph import OpenGraph
 import base64
 
-import pandas as pd
 from bokeh.models.tools import *
 from bokeh.plotting import *
-from bokeh.models import CustomJS
+from bokeh.models import CustomJS, LayoutDOM
 # create a plot and style its properties
 from OpenGraph.OpenGraph import OpenGraph
 from bokeh.layouts import row, column, layout
 from bokeh.models import ColumnDataSource, CustomJS, HoverTool, PanTool, WheelPanTool, WheelZoomTool, LassoSelectTool, \
     ResetTool, SaveTool, PolySelectTool, ZoomOutTool, ZoomInTool, BoxSelectTool
 from bokeh.models.widgets import Button
-from bokeh.io import curdoc
-import numpy as np
 
 
 class OpenSignal:
     openGraph: OpenGraph
     DefaultDoc: List[Model] = []
+    Layout: layout() = []
 
 
     # OpenGraphSection
-    file_source = ColumnDataSource({'file_contents': [], 'file_name': []})
+    file_source: ColumnDataSource = ""
     activeFile = ""
 
-    def onFileChanged(self):
-        self.openGraph = OpenGraph(self.activeFile)
+    def onFileChanged(self, activeFile):
+        self.Layout.children = []
+        self.Layout.children = [self.createUploadFileButton()]
+        self.openGraph = OpenGraph(self.Layout, activeFile)
         # print(self.openGraph.Metadata.Data)
         # print(self.openGraph.Metadata.Data)
         # curdoc().add_root(column(self.controls()))
@@ -50,16 +53,17 @@ class OpenSignal:
         return ""
 
     def file_callback(self, attr, old, new):
-        raw_contents = self.file_source.data['file_contents'][0]
+        raw_contents = new['file_contents'][0]
         # remove the prefix that JS adds
         prefix, b64_contents = raw_contents.split(",", 1)
         file_contents = base64.b64decode(b64_contents)
-        print('filename:', self.file_source.data['file_name'])
+        print('uploaded: file name:', new['file_name'])
         file_io = io.BytesIO(file_contents)
         df = file_io.read()
-        self.activeFile = df.decode("UTF-8")
-        self.onFileChanged()
-        return ""
+        file = df.decode("UTF-8")
+        self.activeFile = file
+        self.onFileChanged(file)
+        return
 
 
 
@@ -98,18 +102,27 @@ class OpenSignal:
            }
            input.click();
            """)
-        curdoc().add_root(row(button))
+        return row(button)
 
     ##
 
-    def __init__(self):
+    def generateLayout(self):
+        return self.Layout
+
+    def __init__(self, document):
+        self.openGraph = ""
+        self.DefaultDoc = []
+        self.activeFile = ""
+        self.file_source = ColumnDataSource({'file_contents': [], 'file_name': []})
+        self.Layout = layout(self.createUploadFileButton(), [])
         #self.fetch_data = fd.FetchData("https://physionet.org/physiobank/database/emgdb/RECORDS")
         #self.l = self.fetch_data.get_data()
         #self.dfs = Pr.parse_to_csv(self.l)
         #self.fileNames = self.dfs[1]
         #self.load_csv()
         #output_file('dashboard.html')
-        self.createUploadFileButton()
+        #curdoc().add_root(self.createUploadFileButton())
+        document.add_root(self.Layout)
         return
 
 

@@ -30,6 +30,8 @@ def create_bokeh_server(io_loop, files, argvs, host, port):
         'develop':False,
         'port':port,
         'use_index':True,
+        "check_unused_sessions": 0,
+        "unused_session_lifetime": 0,
     }
     #  set this to some subdomain like: *.ngrok.io
     server = Server(apps, host=['*'], allow_websocket_origin=["*"], **kwargs)
@@ -136,7 +138,7 @@ def run_single_app(files, arg, port=5000, new='tab'):
 
 if __name__ == "__main__":
     import os
-    files = ["Notebook.py"]
+    files = [""]
     run_single_app(files,  str("dummy"), port=5000)
 
 
