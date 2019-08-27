@@ -10,12 +10,12 @@ while True:
 
     try:
         p = Popen("python " + filename, shell=True)
-        p.wait(2)
-        p.wait()
+        p.wait(100)
     except:
         "(Exception!) Trying to create server again."
-    p.wait()
+    p.wait(100)
     os.system(
         "runas /savecred /profile /user:slavka \"powershell.exe Stop-Process -ID (Get-Process -Id (Get-NetTCPConnection -LocalPort 5000).OwningProcess).Id -Force\"")
+    p.wait(100)
     # prog.communicate()
     # print(prog)

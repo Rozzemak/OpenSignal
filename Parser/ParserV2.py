@@ -4,7 +4,6 @@ import io
 import pandas as pd
 from OpenGraph.Metadata import Metadata
 import csv
-import requests
 
 
 def readAscAsMetadata(file: str):

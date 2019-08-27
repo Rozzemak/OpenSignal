@@ -4,7 +4,6 @@ import io
 
 import numpy
 import numpy as np
-import holoviews as hv
 from bokeh.io import push_notebook
 from bokeh.layouts import column, row, layout
 from bokeh.model import Model

@@ -3,7 +3,6 @@ from functools import partial
 from typing import Type, Set, List
 
 import numpy as np
-import holoviews as hv
 from bokeh.layouts import column, row, layout
 from bokeh.models import *
 from bokeh.models.widgets import Select, Button, Slider
@@ -126,7 +125,7 @@ class OpenGraph:
     def iterateAndCorrelate(self, graphId, selected):
         from pandas import DataFrame
         subDataframe = self.Metadata.Data[graphId].iloc[selected[0]: selected[0] + len(selected)]
-        print(list(subDataframe.iloc[:,0:1]))
+        #print(list(subDataframe.iloc[:, 0:1]))
         rng = subDataframe.size
         dataFramesDict = {}
         for _graphId in range(len(self.Figures)):
@@ -136,38 +135,43 @@ class OpenGraph:
                 dataFramesDict[_graphId].append(self.Metadata.Data[_graphId].iloc[_list[0]: _list[0] + len(_list)])
         print("List of correlation ranges created")
         print("Dataframes created")
-        print("Dataframecount: "+ str(len(dataFramesDict)))
+        print("Dataframecount: " + str(len(dataFramesDict)))
         selectedPointsDict = {}
         CorrelationPasses = {}
+        from scipy.stats.stats import pearsonr
         for _dataFrameKey in range(len(dataFramesDict)):
             selectedPointsDict[_dataFrameKey] = []
             CorrelationPasses[_dataFrameKey] = []
             for dataFrameId in range(len(dataFramesDict[_dataFrameKey]) - 1):
                 _dtFrame = dataFramesDict[_dataFrameKey][dataFrameId]
-                output = _dtFrame.ix[:2].corr(subDataframe.ix[:2], method='pearson')
-                if (not np.isnan(output)) and abs(output) > 0.25 and abs(output) < 0.95:
-                    #selectedPointsDict[_dataFrameKey] = union(selectedPointsDict[_dataFrameKey],
+                _output = (pearsonr(_dtFrame, subDataframe))
+                positiveCoef = _output[0]
+                negativeCoef = _output[1]
+                #print(output)
+                #output = _dtFrame.corr(subDataframe, method='pearson', min_periods=5)
+                if (not np.isnan(positiveCoef)) and 0.10 < positiveCoef and negativeCoef < 0.05: #< positiveCoef > (negativeCoef - positiveCoef) < negativeCoef:
+                    # selectedPointsDict[_dataFrameKey] = union(selectedPointsDict[_dataFrameKey],
                     #                                          _dtFrame.index)
                     CorrelationPasses[_dataFrameKey].extend(list(_dtFrame.index))
-                    #print(str(output)+ "=>" + str(_dtFrame.index[0]))
-        print("Correlation done")
+                    print(_output)
+                    # print(str(output)+ "=>" + str(_dtFrame.index[0]))
+        print("Correlation mid-step")
         del dataFramesDict
         for _corrPassKey in range(len(CorrelationPasses)):
             CorrelationPasses[_corrPassKey] = sorted(list(set(CorrelationPasses[_corrPassKey])))
-        print(CorrelationPasses)
-        del CorrelationPasses
+        #print(CorrelationPasses)
         print("Selection points ready")
-        #for _selectedPointsKey in range(len(selectedPointsDict)):
+        # for _selectedPointsKey in range(len(selectedPointsDict)):
         #    self.DataSources[self.Metadata.Definitions["phasename"]][_selectedPointsKey].selected.indices = \
         #        selectedPointsDict[_selectedPointsKey]
         for _selectedPointsKey in range(len(CorrelationPasses)):
             self.DataSources[self.Metadata.Definitions["phasename"]][_selectedPointsKey].selected.indices = \
                 CorrelationPasses[_selectedPointsKey]
-
+        del CorrelationPasses
         print("Correlation projection done")
 
         # self.makePointsSelected(int(dataFrames[_dataFrame].iloc[0]), dataFrames[_dataFrame].size)
-        #print(selectedPointsDict)
+        # print(selectedPointsDict)
 
         #        output = self.Metadata.Data[_graphId].iloc[ilocSelection[_graphId][sublist]].corr(
         #            subDataframe, method='kendall', min_periods=1)
