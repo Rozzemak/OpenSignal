@@ -126,26 +126,48 @@ class OpenGraph:
     def iterateAndCorrelate(self, graphId, selected):
         from pandas import DataFrame
         subDataframe = self.Metadata.Data[graphId].iloc[selected[0]: selected[0] + len(selected)]
+        print(list(subDataframe.iloc[:,0:1]))
         rng = subDataframe.size
-        ilocSelection = {}
-        ilocDataFrames = []
+        dataFramesDict = {}
         for _graphId in range(len(self.Figures)):
-            ilocSelection[_graphId] = []
+            dataFramesDict[_graphId] = []
             for subGraphId in range(int((self.Metadata.Data[_graphId].size - rng))):
-                ilocSelection[_graphId] += [list(range(subGraphId, subGraphId + rng))]
+                _list = list(range(subGraphId, subGraphId + rng))
+                dataFramesDict[_graphId].append(self.Metadata.Data[_graphId].iloc[_list[0]: _list[0] + len(_list)])
         print("List of correlation ranges created")
-        dataFrames = []
-        for _graphId in range(len(self.Figures)):
-            for sublist in range(len(ilocSelection[_graphId]) - rng):
-                _list = ilocSelection[_graphId][sublist]
-                dataFrames.append(self.Metadata.Data[_graphId].iloc[_list[0]: _list[0] + len(_list)])
-        del ilocSelection
         print("Dataframes created")
-        for _dataFrame in range(len(dataFrames)):
-            output = dataFrames[_dataFrame].corr(subDataframe, method='spearman')
-            if (not np.isnan(output)) and abs(output) > 0.3:
-                #self.makePointsSelected(int(dataFrames[_dataFrame].iloc[0]), dataFrames[_dataFrame].size)
-                print(output)
+        print("Dataframecount: "+ str(len(dataFramesDict)))
+        selectedPointsDict = {}
+        CorrelationPasses = {}
+        for _dataFrameKey in range(len(dataFramesDict)):
+            selectedPointsDict[_dataFrameKey] = []
+            CorrelationPasses[_dataFrameKey] = []
+            for dataFrameId in range(len(dataFramesDict[_dataFrameKey]) - 1):
+                _dtFrame = dataFramesDict[_dataFrameKey][dataFrameId]
+                output = _dtFrame.ix[:2].corr(subDataframe.ix[:2], method='pearson')
+                if (not np.isnan(output)) and abs(output) > 0.25 and abs(output) < 0.95:
+                    #selectedPointsDict[_dataFrameKey] = union(selectedPointsDict[_dataFrameKey],
+                    #                                          _dtFrame.index)
+                    CorrelationPasses[_dataFrameKey].extend(list(_dtFrame.index))
+                    #print(str(output)+ "=>" + str(_dtFrame.index[0]))
+        print("Correlation done")
+        del dataFramesDict
+        for _corrPassKey in range(len(CorrelationPasses)):
+            CorrelationPasses[_corrPassKey] = sorted(list(set(CorrelationPasses[_corrPassKey])))
+        print(CorrelationPasses)
+        del CorrelationPasses
+        print("Selection points ready")
+        #for _selectedPointsKey in range(len(selectedPointsDict)):
+        #    self.DataSources[self.Metadata.Definitions["phasename"]][_selectedPointsKey].selected.indices = \
+        #        selectedPointsDict[_selectedPointsKey]
+        for _selectedPointsKey in range(len(CorrelationPasses)):
+            self.DataSources[self.Metadata.Definitions["phasename"]][_selectedPointsKey].selected.indices = \
+                CorrelationPasses[_selectedPointsKey]
+
+        print("Correlation projection done")
+
+        # self.makePointsSelected(int(dataFrames[_dataFrame].iloc[0]), dataFrames[_dataFrame].size)
+        #print(selectedPointsDict)
 
         #        output = self.Metadata.Data[_graphId].iloc[ilocSelection[_graphId][sublist]].corr(
         #            subDataframe, method='kendall', min_periods=1)
