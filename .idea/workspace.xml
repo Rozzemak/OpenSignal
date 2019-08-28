@@ -2,14 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3720367d-817d-4a2d-a254-ca02251c45f5" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/opensig2.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/opensig2.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/OpenGraph/OpenGraph.py" beforeDir="false" afterPath="$PROJECT_DIR$/OpenGraph/OpenGraph.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Parser/ParserV2.py" beforeDir="false" afterPath="$PROJECT_DIR$/Parser/ParserV2.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RunForever.py" beforeDir="false" afterPath="$PROJECT_DIR$/RunForever.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/graph.py" beforeDir="false" afterPath="$PROJECT_DIR$/graph.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -125,7 +119,7 @@
       <workItem from="1562438081836" duration="50012000" />
       <workItem from="1562582573114" duration="19148000" />
       <workItem from="1566916440247" duration="113000" />
-      <workItem from="1566917356979" duration="12409000" />
+      <workItem from="1566917356979" duration="33325000" />
     </task>
     <task id="LOCAL-00001" summary="Code completely re-writen from scratch. OOP approach used. Graph metadata impl, graph data selection impl.">
       <created>1562258870230</created>
@@ -148,7 +142,14 @@
       <option name="project" value="LOCAL" />
       <updated>1562551992073</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Corr by coeficient nearly ready to implement.">
+      <created>1566929966975</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1566929966975</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TodoView">
@@ -188,10 +189,11 @@
     <MESSAGE value="Code completely re-writen from scratch. OOP approach used. Graph metadata impl, graph data selection impl." />
     <MESSAGE value="Server restart on fault-impl. All hosts and origins are now allowed. Server creation is now custom." />
     <MESSAGE value="Corr works, but too much ram consumtion going on" />
-    <option name="LAST_COMMIT_MESSAGE" value="Corr works, but too much ram consumtion going on" />
+    <MESSAGE value="Corr by coeficient nearly ready to implement." />
+    <option name="LAST_COMMIT_MESSAGE" value="Corr by coeficient nearly ready to implement." />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/os$Server.coverage" NAME="Server Coverage Results" MODIFIED="1566929821355" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/os$Server.coverage" NAME="Server Coverage Results" MODIFIED="1566950669748" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/opensig2$Server.coverage" NAME="Server Coverage Results" MODIFIED="1566916468839" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/opensig2$Server__1_.coverage" NAME="Server (1) Coverage Results" MODIFIED="1562272113356" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/opensig2$main.coverage" NAME="main Coverage Results" MODIFIED="1562438750008" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
