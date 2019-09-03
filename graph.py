@@ -71,7 +71,7 @@ class OpenSignal:
 
     def createUploadFileButton(self):
         self.file_source.on_change('data', self.file_callback)
-        button = Button(label="Upload", button_type="success")
+        button = Button(label="Upload", button_type="success", name=str(uuid.uuid1()))
         button.on_click(partial(self.disableButton, button=button))
         #button.on_click(lambda: self.uploadFile(file_source=self.file_source, button=button))
         button.callback = CustomJS(args=dict(file_source=self.file_source), code="""

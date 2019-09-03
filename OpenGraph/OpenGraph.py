@@ -1,4 +1,5 @@
 import json
+import uuid
 from copy import copy, deepcopy
 from functools import partial
 from os.path import join, dirname
@@ -37,8 +38,9 @@ class OpenGraph:
     Models: List[Column] = []
     Layout: lyt
     CorrCoefRange: RangeSlider = RangeSlider(title="Coeficient limit. (i < corr < j)", start=0.09, end=1,
-                                             value=(0.135, 0.95), step=0.0025, format="0.00,0.00")
-    DownloadButton: Button = Button(label="Download", button_type="success")
+                                             value=(0.135, 0.95), step=0.0025, format="0.00,0.00",
+                                             name=str(uuid.uuid1()))
+    DownloadButton: Button = Button(label="Download", button_type="success", name=str(uuid.uuid1()))
     SimilaritiesSource = ['No similarities found.']
 
     def __init__(self, Layout, AscFile):
@@ -63,28 +65,30 @@ class OpenGraph:
                           width=1200, height=350,
                           y_range=(self.Metadata.Data[i].min(), self.Metadata.Data[i].max()),
                           x_range=(0, y1.size),
+                          name=str(uuid.uuid1())
                           # y_axis_type="datetime", Does not make sence to time this really
                           # x_axis_type="datetime",
                           )
             plot.xaxis.axis_label = "Ticks[Individual samples]"
             plot.yaxis.axis_label = str(list(self.Metadata.Units)[0])
 
-            plot.add_tools(HelpTool(name=str(i) + "pt"))
-            plot.add_tools(PanTool(name=str(i) + "pt"))
-            plot.add_tools(ZoomInTool(name=str(i) + "zit"))
-            plot.add_tools(ZoomOutTool(name=str(i) + "zot"))
-            plot.add_tools(BoxSelectTool(name=str(i) + "bst"))
-            plot.add_tools(ResetTool(name=str(i) + "rt"))
-            plot.add_tools(SaveTool(name=str(i) + "st"))
-            plot.line(x1, y1, line_width=1, name=str(i))
+            plot.add_tools(HelpTool(name=str(i) + "pt" + str(uuid.uuid1())))
+            plot.add_tools(PanTool(name=str(i) + "pt" + str(uuid.uuid1())))
+            plot.add_tools(ZoomInTool(name=str(i) + "zit" + str(uuid.uuid1())))
+            plot.add_tools(ZoomOutTool(name=str(i) + "zot" + str(uuid.uuid1())))
+            plot.add_tools(BoxSelectTool(name=str(i) + "bst" + str(uuid.uuid1())))
+            plot.add_tools(ResetTool(name=str(i) + "rt" + str(uuid.uuid1())))
+            plot.add_tools(SaveTool(name=str(i) + "st" + str(uuid.uuid1())))
+            plot.line(x1, y1, line_width=1, name=str(i) + str(uuid.uuid1()))
 
             plot.scatter("xvals", "yvals", source=self.DataSources[self.Metadata.Definitions["phasename"]][i],
                          alpha=0,
                          selection_color="firebrick", selection_line_alpha=0.1,
-                         nonselection_fill_alpha=0.0
+                         nonselection_fill_alpha=0.0,
+                         name=str(uuid.uuid1())
                          )
 
-            btn = Button(label='Find similarities', button_type='success', width=100, name=str(i))
+            btn = Button(label='Find similarities', button_type='success', width=100, name=str(i) + str(uuid.uuid1()))
             btn.on_event(ButtonClick, partial(self.beforeClicked, button=btn, graphId=i))
             self.Buttons.append(btn)
             self.Figures.append(plot)
@@ -120,31 +124,31 @@ class OpenGraph:
         button.disabled = False
         # thread.join()
         # button.label = "Done!"
-        #for child in self.Layout.children:
+        # for child in self.Layout.children:
         #    if type(child) is Row:
         #        for btn in child.children:
         #            if type(btn) is Button:
         #                print("d")
         #                btn.label = ''
-        #self.DownloadButton.label = "aa"
-        #self.Layout.u
-        #print(list(itertools.chain.from_iterable(self.Layout)))
+        # self.DownloadButton.label = "aa"
+        # self.Layout.u
+        # print(list(itertools.chain.from_iterable(self.Layout)))
 
-
-        #for btn in self.Buttons:
+        # for btn in self.Buttons:
         #    btn.label = "duh"  # WTF, this dus not work!! todo: report the whack out of this to git
 
-    def threadCorelate(self, graphId:int, button: Button):
+    def threadCorelate(self, graphId: int, button: Button):
         indices = self.DataSources[self.Metadata.Definitions["phasename"]][graphId].selected.indices
         self.ActiveSelection = dict(zip(sorted(list(indices)),
                                         self.Metadata.Data[graphId].astype(float)))
-        self.iterateAndCorrelate(graphId, sorted(list(indices)))
+        self.iterateAndCorrelate(graphId, sorted(list(indices)), button)
         # for btn in self.Buttons:
 
     def beforeClicked(self, event, button: Button, graphId: int):
         button.disabled = True
         button.label = 'Working!'
-        UnlockedDocumentProxy(button.document).add_next_tick_callback(partial(self.calculate_datapoints, graphId=graphId, button=button))
+        UnlockedDocumentProxy(button.document).add_next_tick_callback(
+            partial(self.calculate_datapoints, graphId=graphId, button=button))
 
     def loadFile(self, fileStream):
         return readAscAsMetadata(fileStream)
@@ -155,8 +159,9 @@ class OpenGraph:
                                          self.Metadata.Definitions["samplingfreq"],
                                          self.Metadata.Definitions["firstsampletime"], self.Metadata.Data))
 
-    @without_document_lock
-    def iterateAndCorrelate(self, graphId, selected):
+    def iterateAndCorrelate(self, graphId, selected, button: Button):
+        if len(selected) < 2:
+            return
         subDataframe = self.Metadata.Data[graphId].iloc[selected[0]: selected[0] + len(selected)]
         # print(list(subDataframe.iloc[:, 0:1]))
         rng = subDataframe.size
@@ -166,10 +171,15 @@ class OpenGraph:
             print(_graphId)
             dataFramesDict[_graphId] = []
             CorrelationPasses[str(list(self.Metadata.SourceNames)[_graphId])] = []
+            # todo: callback
+            UnlockedDocumentProxy(button.document).add_next_tick_callback(
+                partial(self.progressReport, progressValue=_graphId, button=button))
             for subGraphId in range(int((self.Metadata.Data[_graphId].size - rng))):
                 _list = list(range(subGraphId, subGraphId + rng))
                 dataFramesDict[_graphId].append(self.Metadata.Data[_graphId].iloc[_list[0]:
-                                                                                  numpy.clip(_list[0] + len(_list), 0, self.Metadata.Data[_graphId].size)])
+                                                                                  numpy.clip(_list[0] + len(_list), 0,
+                                                                                             self.Metadata.Data[
+                                                                                                 _graphId].size)])
                 del _list
         print("List of correlation ranges created")
         print("Dataframes created")
@@ -205,7 +215,8 @@ class OpenGraph:
             CorrelationPasses[_corrPassKey] = sorted(list(set(CorrelationPasses[_corrPassKey])))
         print("Selection points ready")
         for _selectedPointsKey in CorrelationPasses:
-            self.DataSources[self.Metadata.Definitions["phasename"]][list(CorrelationPasses.keys()).index(_selectedPointsKey)].selected.indices = \
+            self.DataSources[self.Metadata.Definitions["phasename"]][
+                list(CorrelationPasses.keys()).index(_selectedPointsKey)].selected.indices = \
                 CorrelationPasses[_selectedPointsKey]
         self.DownloadButton.callback = CustomJS(args=dict(
             source='Signal count:[' + str(len(CorrelationPasses)) + '], Treshold hit count:[' + str(hits)
@@ -224,6 +235,10 @@ class OpenGraph:
             self.DataSources[self.Metadata.Definitions["phasename"]][graphId].selected.indices = union(
                 list(range(corrCheckStart, corrCheckStop)),
                 list(self.DataSources[self.Metadata.Definitions["phasename"]][graphId].selected.indices))
+        return
+
+    def progressReport(self, button: Button, progressValue):
+        button.label = str(progressValue)
         return
 
     def DownloadButtonJs(self):
