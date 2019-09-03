@@ -2,17 +2,26 @@ import json
 from copy import copy, deepcopy
 from functools import partial
 from os.path import join, dirname
+from threading import Thread
 from typing import Type, Set, List
 
+import numpy
 import numpy as np
+import itertools
 from bokeh.command.subcommands.json import JSON
-from bokeh.layouts import column, row, layout
+from bokeh.document import without_document_lock
+from bokeh.document.locking import UnlockedDocumentProxy
+from bokeh.events import ButtonClick
+from bokeh.layouts import column, row, layout, layout as lyt
 from bokeh.models import *
 from bokeh.models.widgets import Select, Button, Slider
 from bokeh.plotting import figure, output_file, curdoc, show, Figure
 from isort.utils import union
 from numpy import source
 from typing import Dict
+
+from tornado import gen
+
 from .Metadata import Metadata
 from .Channel import Channel
 from Parser.ParserV2 import readAscAsMetadata
@@ -26,10 +35,10 @@ class OpenGraph:
     Buttons: List[Button] = []
     ActiveSelection: Dict[int, float] = {}
     Models: List[Column] = []
-    Layout: layout
+    Layout: lyt
     CorrCoefRange: RangeSlider = RangeSlider(title="Coeficient limit. (i < corr < j)", start=0.09, end=1,
                                              value=(0.135, 0.95), step=0.0025, format="0.00,0.00")
-    DownloadButton = Button(label="Download", button_type="success")
+    DownloadButton: Button = Button(label="Download", button_type="success")
     SimilaritiesSource = ['No similarities found.']
 
     def __init__(self, Layout, AscFile):
@@ -76,16 +85,16 @@ class OpenGraph:
                          )
 
             btn = Button(label='Find similarities', button_type='success', width=100, name=str(i))
-            btn.on_click(partial(self.calculate_datapoints, graphId=i))
+            btn.on_event(ButtonClick, partial(self.beforeClicked, button=btn, graphId=i))
             self.Buttons.append(btn)
             self.Figures.append(plot)
 
     def createModels(self):
         self.Layout.children.append(layout(row([self.DownloadButton, self.CorrCoefRange])))
         for j in range(len(self.Figures)):
-            model = column(self.Buttons[j], self.Figures[j])
-            self.Models.append(copy(model))
-            self.Layout.children.append(layout(row([self.Figures[j], self.Buttons[j]])))
+            model = layout(row([self.Figures[j], self.Buttons[j]]))
+            self.Models.append(model)
+            self.Layout.children.append(model)
         return
 
     def setDataSources(self):
@@ -103,14 +112,39 @@ class OpenGraph:
             ))
         print(self.DataSources)
 
-    def calculate_datapoints(self, graphId):
+    @without_document_lock
+    def calculate_datapoints(self, graphId: int, button: Button):
+        # Thread(target=lambda: UnlockedDocumentProxy(button.document).add_next_tick_callback()).start()
+        self.threadCorelate(graphId, button)
+        button.label = 'Find Similarities'
+        button.disabled = False
+        # thread.join()
+        # button.label = "Done!"
+        #for child in self.Layout.children:
+        #    if type(child) is Row:
+        #        for btn in child.children:
+        #            if type(btn) is Button:
+        #                print("d")
+        #                btn.label = ''
+        #self.DownloadButton.label = "aa"
+        #self.Layout.u
+        #print(list(itertools.chain.from_iterable(self.Layout)))
+
+
+        #for btn in self.Buttons:
+        #    btn.label = "duh"  # WTF, this dus not work!! todo: report the whack out of this to git
+
+    def threadCorelate(self, graphId:int, button: Button):
         indices = self.DataSources[self.Metadata.Definitions["phasename"]][graphId].selected.indices
         self.ActiveSelection = dict(zip(sorted(list(indices)),
                                         self.Metadata.Data[graphId].astype(float)))
-        # print(self.ActiveSelection)
-        # print(self.Metadata.Data[0].corr(self.Metadata.Data[1], method='pearson', min_periods=1))
-        # self.makePointsSelected(1, 5000)
         self.iterateAndCorrelate(graphId, sorted(list(indices)))
+        # for btn in self.Buttons:
+
+    def beforeClicked(self, event, button: Button, graphId: int):
+        button.disabled = True
+        button.label = 'Working!'
+        UnlockedDocumentProxy(button.document).add_next_tick_callback(partial(self.calculate_datapoints, graphId=graphId, button=button))
 
     def loadFile(self, fileStream):
         return readAscAsMetadata(fileStream)
@@ -121,28 +155,32 @@ class OpenGraph:
                                          self.Metadata.Definitions["samplingfreq"],
                                          self.Metadata.Definitions["firstsampletime"], self.Metadata.Data))
 
+    @without_document_lock
     def iterateAndCorrelate(self, graphId, selected):
         subDataframe = self.Metadata.Data[graphId].iloc[selected[0]: selected[0] + len(selected)]
         # print(list(subDataframe.iloc[:, 0:1]))
         rng = subDataframe.size
         dataFramesDict = {}
+        CorrelationPasses = {}
         for _graphId in range(len(self.Figures)):
+            print(_graphId)
             dataFramesDict[_graphId] = []
+            CorrelationPasses[str(list(self.Metadata.SourceNames)[_graphId])] = []
             for subGraphId in range(int((self.Metadata.Data[_graphId].size - rng))):
                 _list = list(range(subGraphId, subGraphId + rng))
-                dataFramesDict[_graphId].append(self.Metadata.Data[_graphId].iloc[_list[0]: _list[0] + len(_list)])
+                dataFramesDict[_graphId].append(self.Metadata.Data[_graphId].iloc[_list[0]:
+                                                                                  numpy.clip(_list[0] + len(_list), 0, self.Metadata.Data[_graphId].size)])
+                del _list
         print("List of correlation ranges created")
         print("Dataframes created")
         print("Dataframecount: " + str(len(dataFramesDict)))
         selectedPointsDict = {}
-        CorrelationPasses = {}
         lowerCorrLimit = float(self.CorrCoefRange.value[0])
         uppercorrLimit = float(self.CorrCoefRange.value[1])
         hits: int = 0
         from scipy.stats.stats import pearsonr
         for _dataFrameKey in range(len(dataFramesDict)):
             selectedPointsDict[_dataFrameKey] = []
-            CorrelationPasses[_dataFrameKey] = []
             for dataFrameId in range(len(dataFramesDict[_dataFrameKey]) - 1):
                 _dtFrame = dataFramesDict[_dataFrameKey][dataFrameId]
                 _output = (pearsonr(_dtFrame, subDataframe))
@@ -155,22 +193,26 @@ class OpenGraph:
                     # < positiveCoef > (negativeCoef - positiveCoef) < negativeCoef:
                     # selectedPointsDict[_dataFrameKey] = union(selectedPointsDict[_dataFrameKey],
                     #                                          _dtFrame.index)
-                    CorrelationPasses[_dataFrameKey].extend(list(_dtFrame.index))
+                    lst = list(_dtFrame.index)
+                    CorrelationPasses[str(list(self.Metadata.SourceNames)[_dataFrameKey])].extend(lst)
+                    del lst
                     hits += 1
                     print(_output)
                     # print(str(output)+ "=>" + str(_dtFrame.index[0]))
         print("Correlation mid-step")
         del dataFramesDict
-        for _corrPassKey in range(len(CorrelationPasses)):
+        for _corrPassKey in CorrelationPasses:
             CorrelationPasses[_corrPassKey] = sorted(list(set(CorrelationPasses[_corrPassKey])))
         print("Selection points ready")
-        for _selectedPointsKey in range(len(CorrelationPasses)):
-            self.DataSources[self.Metadata.Definitions["phasename"]][_selectedPointsKey].selected.indices = \
+        for _selectedPointsKey in CorrelationPasses:
+            self.DataSources[self.Metadata.Definitions["phasename"]][list(CorrelationPasses.keys()).index(_selectedPointsKey)].selected.indices = \
                 CorrelationPasses[_selectedPointsKey]
         self.DownloadButton.callback = CustomJS(args=dict(
             source='Signal count:[' + str(len(CorrelationPasses)) + '], Treshold hit count:[' + str(hits)
-                   + '](ordered by channel)|->' + json.dumps(CorrelationPasses)),
-                                                code=self.DownloadButtonJs())
+                   + '] Compared to:(channel:[' + str(list(self.Metadata.SourceNames)[graphId]) + '],'
+                   + 'channel:[' + str(graphId) + '],'
+                   + ')data:{' + str(list(subDataframe)) + '}(ordered by channel)|->' + json.dumps(CorrelationPasses)),
+            code=self.DownloadButtonJs())
         del CorrelationPasses
         print("Correlation projection done")
         print("Correlation done")
@@ -186,13 +228,12 @@ class OpenGraph:
 
     def DownloadButtonJs(self):
         return """
-function table_to_csv(source) {
+function downloadFile(source) {
     return source
 }
 
-
 const filename = 'data_result.txt'
-filetext = table_to_csv(source)
+filetext = downloadFile(source)
 const blob = new Blob([filetext], {type: 'text/plain'})
 
 //addresses IE

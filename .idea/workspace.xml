@@ -3,7 +3,11 @@
   <component name="ChangeListManager">
     <list default="true" id="3720367d-817d-4a2d-a254-ca02251c45f5" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Notebook.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/OpenGraph/OpenGraph.py" beforeDir="false" afterPath="$PROJECT_DIR$/OpenGraph/OpenGraph.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/graph.py" beforeDir="false" afterPath="$PROJECT_DIR$/graph.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server_lifecycle.py" beforeDir="false" afterPath="$PROJECT_DIR$/server_lifecycle.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -17,19 +21,6 @@
         <option value="Python Script" />
       </list>
     </option>
-  </component>
-  <component name="FindInProjectRecents">
-    <findStrings>
-      <find>asda</find>
-      <find>message</find>
-      <find>file_source</find>
-      <find>curdoc</find>
-      <find>name</find>
-      <find>argv</find>
-      <find>createLayout</find>
-      <find>add</find>
-      <find>DataSources</find>
-    </findStrings>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -64,8 +55,30 @@
       </list>
     </option>
   </component>
-  <component name="RunManager">
-    <configuration name="Server" type="PythonConfigurationType" factoryName="Python" temporary="true">
+  <component name="RunManager" selected="Python.Debug">
+    <configuration name="Debug" type="PythonConfigurationType" factoryName="Python">
+      <module name="opensig2" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Server.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Server" type="PythonConfigurationType" factoryName="Python">
       <module name="opensig2" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -87,11 +100,10 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <recent_temporary>
-      <list>
-        <item itemvalue="Python.Server" />
-      </list>
-    </recent_temporary>
+    <list>
+      <item itemvalue="Python.Server" />
+      <item itemvalue="Python.Debug" />
+    </list>
   </component>
   <component name="SvnConfiguration">
     <configuration />
@@ -119,7 +131,8 @@
       <workItem from="1562438081836" duration="50012000" />
       <workItem from="1562582573114" duration="19148000" />
       <workItem from="1566916440247" duration="113000" />
-      <workItem from="1566917356979" duration="33325000" />
+      <workItem from="1566917356979" duration="33483000" />
+      <workItem from="1567441513471" duration="36304000" />
     </task>
     <task id="LOCAL-00001" summary="Code completely re-writen from scratch. OOP approach used. Graph metadata impl, graph data selection impl.">
       <created>1562258870230</created>
@@ -149,7 +162,14 @@
       <option name="project" value="LOCAL" />
       <updated>1566929966975</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Corr by corr coeficient impl, add file output">
+      <created>1566950991251</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1566950991251</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TodoView">
@@ -179,7 +199,9 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
           </value>
         </entry>
       </map>
@@ -190,7 +212,8 @@
     <MESSAGE value="Server restart on fault-impl. All hosts and origins are now allowed. Server creation is now custom." />
     <MESSAGE value="Corr works, but too much ram consumtion going on" />
     <MESSAGE value="Corr by coeficient nearly ready to implement." />
-    <option name="LAST_COMMIT_MESSAGE" value="Corr by coeficient nearly ready to implement." />
+    <MESSAGE value="Corr by corr coeficient impl, add file output" />
+    <option name="LAST_COMMIT_MESSAGE" value="Corr by corr coeficient impl, add file output" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/os$Server.coverage" NAME="Server Coverage Results" MODIFIED="1566950669748" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
@@ -198,5 +221,6 @@
     <SUITE FILE_PATH="coverage/opensig2$Server__1_.coverage" NAME="Server (1) Coverage Results" MODIFIED="1562272113356" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/opensig2$main.coverage" NAME="main Coverage Results" MODIFIED="1562438750008" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/opensig2$ParserV2.coverage" NAME="ParserV2 Coverage Results" MODIFIED="1562171659254" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Parser" />
+    <SUITE FILE_PATH="coverage/os$Debug.coverage" NAME="Debug Coverage Results" MODIFIED="1567477903225" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
