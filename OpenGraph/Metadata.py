@@ -1,3 +1,4 @@
+import uuid
 from typing import Dict, Union, List, Any
 
 from pandas import DataFrame
@@ -6,6 +7,7 @@ from OpenGraph.ChannelData import ChannelData
 
 
 class Metadata:
+    Id: str = str(uuid.uuid1())
     #  Im gonna keep these meta definitions here just as deafults
     Definitions: Dict[str, Union[int, float, str]] = {}
     Comments: Dict[str, str] = {"Comment1": ""}

@@ -1,35 +1,18 @@
+import base64
+import io
 import uuid
 from functools import partial
-from typing import List, Any, Set
-import io
+from typing import List
 
-import numpy
-import numpy as np
 from bokeh.document.locking import UnlockedDocumentProxy
-from bokeh.events import ButtonClick
-from bokeh.io import push_notebook
-from bokeh.layouts import column, row, layout
+from bokeh.layouts import row, layout
 from bokeh.model import Model
-from bokeh.models.widgets import Select, Button, Slider
-from bokeh.document import Document
-from bokeh.plotting import figure, output_file, curdoc, show
-import fetch_data as fd
-import pandas as pd
-from Parser import Parser as Pr
-from Callbacks import changeGraphCb
-from scipy.stats import pearsonr
-from OpenGraph import OpenGraph
-import base64
+from bokeh.models import ColumnDataSource, CustomJS
+from bokeh.models.widgets import Button
 
-from bokeh.models.tools import *
-from bokeh.plotting import *
-from bokeh.models import CustomJS, LayoutDOM
+from OpenGraph import OpenGraph
 # create a plot and style its properties
 from OpenGraph.OpenGraph import OpenGraph
-from bokeh.layouts import row, column, layout
-from bokeh.models import ColumnDataSource, CustomJS, HoverTool, PanTool, WheelPanTool, WheelZoomTool, LassoSelectTool, \
-    ResetTool, SaveTool, PolySelectTool, ZoomOutTool, ZoomInTool, BoxSelectTool
-from bokeh.models.widgets import Button
 
 
 class OpenSignal:
@@ -45,7 +28,7 @@ class OpenSignal:
     def onFileChanged(self, activeFile):
         self.Layout.children = []
         self.Layout.children = [self.createUploadFileButton()]
-        self.openGraph = OpenGraph(self.Layout, activeFile)
+        self.openGraph = OpenGraph(self.Layout, activeFile, self.createUploadFileButton)
         # print(self.openGraph.Metadata.Data)
         # print(self.openGraph.Metadata.Data)
         # curdoc().add_root(column(self.controls()))
@@ -137,42 +120,3 @@ class OpenSignal:
         #curdoc().add_root(self.createUploadFileButton())
         document.add_root(self.Layout)
         return
-
-
-    #  Depreceated down below
-    def load_csv(self):
-        self.healthy = pd.read_csv("Files/emg_healthy.txt.csv")
-        self.myopathy = pd.read_csv("Files/emg_myopathy.txt.csv")
-        self.neuropathy = pd.read_csv("Files/emg_neuropathy.txt.csv")
-        self.corelate()
-
-    def corelate(self):
-        lll = []
-        llll = []
-        l = self.healthy["x"]
-        ll = self.neuropathy["y"]
-        lls = self.myopathy["y"]
-
-        for x in range(0, 50):
-            lll.append(l[x])
-            llll.append(ll[x])
-
-        pear, v_value = pearsonr(lll, llll)
-        print(pear)
-        return pear
-
-    def controls(self):
-        options = self.fileNames
-        firstSignal = Select(id=0, title="First signal:", value=options[0], options=options)
-        firstSignal.on_change('value', lambda attr, old, new: changeGraphCb(attr, old, new, self.changeGraph, 0))
-        secondSignal = Select(id=1, title="Second signal:", value=options[0], options=options)
-        secondSignal.on_change('value', lambda attr, old, new: changeGraphCb(attr, old, new, self.changeGraph, 1))
-
-        findButton = Button(label="Find similarities", button_type="success")
-        # findButton.on_event(ButtonClick, self.callback)
-        # firstSignal.on_change("value", print("value"))
-        widgets = column(firstSignal, secondSignal, findButton)
-        return widgets
-
-    # To display in a script
-    #    doc = modify_doc(curdoc())
